@@ -6,17 +6,17 @@ pygments:         true
 permalink:        pretty
 
 # Setup
-title:            Poole
-tagline:          The Jekyll Butler
+title:            42
+tagline:          that's more than enough
 url:              http://getpoole.com
 paginate:         1
 baseurl:          /
 author:
-  name:           Mark Otto
-  url:            https://twitter.com/mdo
-  email:          markdotto@gmail.com
+  name:           Oliver Bestwalter
+  url:            http:oliver.bestwalter.de
+  email:
 
 # Custom vars
 version:          1.0.0
 github:
-  repo:           https://github.com/poole/poole
+  repo:           https://github.com/obestwalter/obestwalter.github.io
