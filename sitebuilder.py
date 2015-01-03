@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+from distutils.dir_util import copy_tree
 
 import sys
 
@@ -10,7 +11,7 @@ from flask.ext.frozen import Freezer
 DEBUG = True
 FLATPAGES_AUTO_RELOAD = DEBUG
 FLATPAGES_EXTENSION = '.md'
-FREEZER_DESTINATION = '_site'
+FREEZER_DESTINATION = '_build'
 
 
 app = Flask(__name__)
@@ -39,5 +40,6 @@ def page(path):
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] == "build":
         freezer.freeze()
+        copy_tree(FREEZER_DESTINATION, '../obestwalter.github.io')
     else:
         app.run(port=8000)
