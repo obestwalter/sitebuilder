@@ -173,9 +173,7 @@
         </list>
       </option>
     </inspection_tool>
-    <inspection_tool class="PyPep8NamingInspection" enabled="false" level="ERROR" enabled_by_default="false">
-      <option name="ignoreTestFunctions" value="true" />
-    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="false" level="ERROR" enabled_by_default="false" />
     <inspection_tool class="PyProtectedMemberInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyRedundantParenthesesInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="myIgnorePercOperator" value="true" />
@@ -185,24 +183,7 @@
     <inspection_tool class="PySingleQuotedDocstringInspection" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
     <inspection_tool class="PyTypeCheckerInspection" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="PyUnreachableCodeInspection" enabled="true" level="ERROR" enabled_by_default="true" />
-    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="ERROR" enabled_by_default="true">
-      <option name="ignoredIdentifiers">
-        <value>
-          <list size="10">
-            <item index="0" class="java.lang.String" itemvalue="pysvn.ClientError" />
-            <item index="1" class="java.lang.String" itemvalue="pytest.mark" />
-            <item index="2" class="java.lang.String" itemvalue="pytest.raises" />
-            <item index="3" class="java.lang.String" itemvalue="pytest.fail" />
-            <item index="4" class="java.lang.String" itemvalue="pytest.fixture" />
-            <item index="5" class="java.lang.String" itemvalue="__grains__" />
-            <item index="6" class="java.lang.String" itemvalue="lxml.etree" />
-            <item index="7" class="java.lang.String" itemvalue="_modules.prodenv.__salt__" />
-            <item index="8" class="java.lang.String" itemvalue="pysvn.depth" />
-            <item index="9" class="java.lang.String" itemvalue="_states.prodenv.__opts__" />
-          </list>
-        </value>
-      </option>
-    </inspection_tool>
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="ERROR" enabled_by_default="true" />
     <inspection_tool class="Query_bound_parameters" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="Query_index_required" enabled="false" level="WARNING" enabled_by_default="false" />
     <inspection_tool class="Query_restricted" enabled="false" level="WARNING" enabled_by_default="false" />
