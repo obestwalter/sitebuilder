@@ -5,7 +5,7 @@ import sys
 from flask import Flask, render_template
 from flask.ext.flatpages import FlatPages
 from flask.ext.frozen import Freezer
-from plumbum import LocalPath, local
+from plumbum import local
 
 
 log = logging.getLogger(__name__)
