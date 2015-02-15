@@ -21,8 +21,12 @@ FREEZER_DESTINATION = '_build'
 
 def make_app_and_pages():
     global FLATPAGES_ROOT
-    templatesPath, flatPagesPath = find_project_assets()
-    app = Flask(__name__, template_folder=str(templatesPath))
+    projectPath, templatesPath, flatPagesPath = find_project_assets()
+    app = Flask(__name__, static_folder=str(projectPath),
+                template_folder=str(templatesPath))
+
+    log.info(app.static_folder)
+    log.info(app.static_url_path)
     FLATPAGES_ROOT = str(flatPagesPath)
     app.config.from_object(__name__)
     pages = FlatPages(app)
@@ -31,12 +35,13 @@ def make_app_and_pages():
 
 def find_project_assets():
     projectPath = local.cwd
-    while True:
+    while projectPath != '/':
+        log.debug('look at %s', projectPath)
         templatesPath = projectPath / 'templates'
         flatPagesPath = projectPath / 'pages'
         if templatesPath.exists() and flatPagesPath.exists():
             log.info('using project at %s', projectPath)
-            return templatesPath, flatPagesPath
+            return projectPath, templatesPath, flatPagesPath
 
         projectPath = projectPath.up()
 
