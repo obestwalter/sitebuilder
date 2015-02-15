@@ -5,10 +5,11 @@ import sys
 from flask import Flask, render_template
 from flask.ext.flatpages import FlatPages
 from flask.ext.frozen import Freezer
-from plumbum import LocalPath
+from plumbum import LocalPath, local
 
 
 log = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
 
 DEBUG = True
@@ -29,7 +30,7 @@ def make_app_and_pages():
 
 
 def find_project_assets():
-    projectPath = LocalPath(__file__).up()
+    projectPath = local.cwd
     while True:
         templatesPath = projectPath / 'templates'
         flatPagesPath = projectPath / 'pages'
@@ -77,6 +78,7 @@ def main():
         freezer.freeze()
         export_build()
     else:
+        log.info("press '^C' to stop server")
         app.run(port=8000)
 
 
