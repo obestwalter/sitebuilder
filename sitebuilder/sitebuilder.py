@@ -2,35 +2,14 @@
 import logging
 import sys
 
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 from flask.ext.flatpages import FlatPages
-from flask.ext.frozen import Freezer
+from flask.ext.frozen import Freezer, os
 from plumbum import local
 
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
-
-
-DEBUG = True
-FLATPAGES_AUTO_RELOAD = DEBUG
-FLATPAGES_EXTENSION = '.md'
-FLATPAGES_ROOT = 'pages'
-FREEZER_DESTINATION = '_build'
-
-
-def make_app_and_pages():
-    global FLATPAGES_ROOT
-    projectPath, templatesPath, flatPagesPath = find_project_assets()
-    app = Flask(__name__, static_folder=str(projectPath),
-                template_folder=str(templatesPath))
-
-    log.info(app.static_folder)
-    log.info(app.static_url_path)
-    FLATPAGES_ROOT = str(flatPagesPath)
-    app.config.from_object(__name__)
-    pages = FlatPages(app)
-    return app, pages
 
 
 def find_project_assets():
@@ -41,14 +20,22 @@ def find_project_assets():
         flatPagesPath = projectPath / 'pages'
         if templatesPath.exists() and flatPagesPath.exists():
             log.info('using project at %s', projectPath)
-            return projectPath, templatesPath, flatPagesPath
+            return projectPath
 
         projectPath = projectPath.up()
 
     raise Exception('no project found')
 
+projectPath = find_project_assets()
 
-app, pages = make_app_and_pages()
+DEBUG = True
+FLATPAGES_AUTO_RELOAD = DEBUG
+FLATPAGES_EXTENSION = '.md'
+APPLICATION_ROOT = str(projectPath)
+app = Flask(__name__)
+app.root_path = str(projectPath)
+app.config.from_object(__name__)
+pages = FlatPages(app)
 
 
 @app.route('/')
@@ -64,6 +51,10 @@ def tag(tag):
 
 @app.route('/<path:path>/')
 def page(path):
+    for specialDir in ['js', 'stylesheets']:
+        if path.startswith(specialDir):
+            return send_from_directory(specialDir, os.path.basename(path))
+
     return render_template('page.html', page=pages.get_or_404(path))
 
 
@@ -73,7 +64,7 @@ def export_build():
     # git rm all removed pages
     # git add all new pages
     # ignore .git and all in .gitignore
-    # copy_tree(FREEZER_DESTINATION, '../obestwalter.github.io')
+    # copy_tree('_build', '../obestwalter.github.io')
     pass
 
 
