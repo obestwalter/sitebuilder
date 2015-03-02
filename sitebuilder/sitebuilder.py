@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+import SimpleHTTPServer
 import logging
 import sys
 
@@ -17,6 +18,8 @@ logging.basicConfig(level=logging.DEBUG)
 DEBUG = True
 FLATPAGES_AUTO_RELOAD = DEBUG
 FLATPAGES_EXTENSION = '.md'
+FREEZER_RELATIVE_URLS = True
+
 try:
     PROJECT_PATH = ProjectFinder(local.cwd).find_project_root_path()
 except UtilsError as e:
@@ -51,16 +54,29 @@ def page(path):
 
 
 def main():
-    if len(sys.argv) > 1 and sys.argv[1] == "build":
+    try:
+        command = sys.argv[1]
+    except IndexError:
+        command = ''
+    port = 8000
+    if command == 'build':
         freezer = Freezer(app)
         freezer.freeze()
+    elif command == 'servefrozen':
+        log.info("press '^C' to stop server")
+        frozenPath = PROJECT_PATH / 'build'
+        with local.cwd(frozenPath):
+            sys.argv[1] = port
+            log.info("serve frozen flask from %s at http://localhost:%s ",
+                     frozenPath, port)
+            SimpleHTTPServer.test()
     else:
         if not ProjectFinder.is_project_root(local.cwd):
             log.error('%s is not a sitebuilder project', local.cwd)
             return 1
 
         log.info("press '^C' to stop server")
-        app.run(port=8000)
+        app.run(port=port)
 
 
 if __name__ == '__main__':
