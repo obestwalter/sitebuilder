@@ -89,9 +89,6 @@ class Sibu(cli.Application):
     path = cli.SwitchAttr(['p', 'path'], default=local.cwd)
 
     def main(self):
-        self._init()
-
-    def _init(self):
         global app
         global pages
 
