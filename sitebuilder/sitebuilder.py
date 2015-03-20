@@ -10,6 +10,8 @@ from plumbum import local, cli
 
 
 log = logging.getLogger(__name__)
+app = None
+pages = None
 
 
 def route_index():
@@ -94,9 +96,9 @@ class Sibu(cli.Application):
         global pages
 
         pf = ProjectFinder(self.path)
-        app = make_app(pf.rootPath)
-        pages = make_pages(app)
         self.projectPath = pf.rootPath
+        app = make_app(self.projectPath)
+        pages = make_pages(app)
         if not self.nested_command:
             self.nested_command = (SibuDev, ['sibu dev'])
 
@@ -128,11 +130,12 @@ class SibuServeFrozen(cli.Application):
 
 
 def main():
+    logging.basicConfig(level=logging.DEBUG)
     try:
-        logging.basicConfig(level=logging.DEBUG)
         Sibu.run()
     except KeyboardInterrupt:
         log.info('stopped by user')
+
 
 if __name__ == '__main__':
     main()
