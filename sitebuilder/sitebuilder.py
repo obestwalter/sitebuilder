@@ -12,12 +12,12 @@ from plumbum import local, cli
 log = logging.getLogger(__name__)
 
 
-def index():
+def route_index():
     # noinspection PyUnresolvedReferences
     return render_template('index.html', pages=pages)
 
 
-def page(path):
+def route_page(path):
     for specialDir in ['js', 'stylesheets']:
         if path.startswith(specialDir):
             return send_from_directory(specialDir, os.path.basename(path))
@@ -26,7 +26,7 @@ def page(path):
     return render_template('page.html', page=pages.get_or_404(path))
 
 
-def tag(tag):
+def route_tag(tag):
     tagged = [p for p in pages if tag in p.meta.get('tags', [])]
     # noinspection PyUnresolvedReferences
     return render_template('tag.html', pages=tagged, tag=tag)
@@ -40,9 +40,9 @@ def make_app(projectPath):
         FLATPAGES_AUTO_RELOAD=True,
         FLATPAGES_EXTENSION='.md',
         FREEZER_RELATIVE_URLS=True)
-    app.add_url_rule('/', 'index', index)
-    app.add_url_rule('/<path:path>/', 'page', page)
-    app.add_url_rule('/tag/<string:tag>/', 'tag', tag)
+    app.add_url_rule('/', 'index', route_index)
+    app.add_url_rule('/<path:path>/', 'page', route_page)
+    app.add_url_rule('/tag/<string:tag>/', 'tag', route_tag)
     return app
 
 
@@ -119,18 +119,20 @@ class SibuBuild(cli.Application):
 class SibuServeFrozen(cli.Application):
     def main(self):
         log.info("press '^C' to stop server")
-        frozenPath = self.parent.rootPath / ProjectFinder.BUILD_DIR
-        with local.cwd(frozenPath):
+        freezerDstPath = self.parent.projectPath / ProjectFinder.BUILD_DIR
+        with local.cwd(freezerDstPath):
             sys.argv[1] = self.parent.PORT
             log.info("serve frozen flask from %s at http://localhost:%s",
-                     frozenPath, self.parent.PORT)
+                     freezerDstPath, self.parent.PORT)
             SimpleHTTPServer.test()
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG)
-    Sibu.run()
-
+    try:
+        logging.basicConfig(level=logging.DEBUG)
+        Sibu.run()
+    except KeyboardInterrupt:
+        log.info('stopped by user')
 
 if __name__ == '__main__':
     main()

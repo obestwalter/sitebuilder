@@ -31,9 +31,8 @@ class Node(object):
     ATTR_VAL_SEP = ":"
     ATTRS = ["weight", "displayName"]
 
-    def __init__(self, path=None):
+    def __init__(self, path=''):
         self.children = []
-        path = path or ""
         if os.path.isabs(path):
             absPath = path
         else:
@@ -50,10 +49,8 @@ class Node(object):
                 self.absPath = os.path.join(absPath, self.NODE_PAGE_FILENAME)
                 self.isLeaf = False
 
-        self.templatePath = self.absPath.split(self.TEMPLATES_PATH)[1][1:]
-        self.absTemplatePath = os.path.join(self.TEMPLATES_PATH,
-            self.templatePath)
-        relPathNoExt = self.templatePath[:-len(self.PAGE_EXT)]
+        templatePath = self.absPath.split(self.TEMPLATES_PATH)[1][1:]
+        relPathNoExt = templatePath[:-len(self.PAGE_EXT)]
         if relPathNoExt == self.NODE_PAGE_NAME:
             self.name = self.ROOT_NAME
             self.linkRelUri = "/"
@@ -62,7 +59,7 @@ class Node(object):
             if self.name.endswith(self.NODE_PAGE_NAME):
                 self.linkRelUri = "/" + self.name.rpartition("/")[0]
             else:
-                self.linkRelUri = "/"+ self.name
+                self.linkRelUri = "/" + self.name
 
         if hasattr(self, "displayName") and self.displayName:
             self.linkLabel = self.displayName
@@ -73,7 +70,6 @@ class Node(object):
                 label = self.name.split("/")[-2]
             elems = label.replace("_", " ").split(" ")
             self.linkLabel = " ".join([e.capitalize() for e in elems])
-
 
     def __str__(self):
         return "%s %s (%s) " % ("NODE" if self.children else "LEAF",
@@ -89,7 +85,7 @@ class Node(object):
 
     def add_child(self, node):
         self.children.append(node)
-        self.children.sort(key = attrgetter("weight"))
+        self.children.sort(key=attrgetter("weight"))
 
     @property
     def isRoot(self):
@@ -156,7 +152,8 @@ class Navigator(object):
         leafWrap = ('<li><a href="%s">%s</a>', '</li>')
         out += indent() + nodeWrap[0] + '\n'
         self.depth += 1
-        out += indent() + leafWrap[0] % (node.linkRelUri, node.linkLabel) + '\n'
+        out += (indent() +
+                leafWrap[0] % (node.linkRelUri, node.linkLabel) + '\n')
         for thisNode in node.children:
             out += self.build_nav(thisNode)
         self.depth -= 1
@@ -191,11 +188,12 @@ def make_nav(pathToTemplates, activePage):
     return navigator.build_nav(rootNode, depth=0)
 
 
-################################## TESTS ######################################
+# ################################# TESTS #####################################
 
 
 def navigator_test():
     logging.basicConfig(level=logging.DEBUG)
+
     def textualize(node, depth):
         return (
             "%sname: '%s', weight: '%s', displayName: '%s'\n" %
