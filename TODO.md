@@ -23,3 +23,5 @@ https://unindented.org/articles/github-ribbon-using-css-transforms/
 * asciinema
 
 * Python console
+
+steal text fading on top and bottom with gradient background: http://www.designbyfire.com/000094.html
