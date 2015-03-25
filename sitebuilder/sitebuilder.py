@@ -1,4 +1,5 @@
 #!/usr/bin/env python2
+# -*- coding: utf-8 -*-
 import SimpleHTTPServer
 import logging
 import sys
@@ -20,18 +21,31 @@ def route_index():
 
 
 def route_page(path):
+    page = pages.get_or_404(path)
     for specialDir in ['js', 'stylesheets']:
         if path.startswith(specialDir):
             return send_from_directory(specialDir, os.path.basename(path))
 
     # noinspection PyUnresolvedReferences
-    return render_template('page.html', page=pages.get_or_404(path))
+    return render_template(
+        'page.html', page=page, info=generate_page_info(page))
 
 
 def route_tag(tag):
     tagged = [p for p in pages if tag in p.meta.get('tags', [])]
     # noinspection PyUnresolvedReferences
     return render_template('tag.html', pages=tagged, tag=tag)
+
+
+def generate_page_info(page):
+    pi = ''
+    author = page.meta.get('username', None)
+    date = page.meta.get('date', None)
+    if author:
+        pi += "Von %s" % (author)
+    if date:
+        pi += ' - %s' % (date)
+    return pi
 
 
 def make_app(projectPath):
